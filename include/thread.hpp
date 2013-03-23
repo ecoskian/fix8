@@ -136,7 +136,16 @@ public:
 
 	/*! Yield CPU.
 		\return result of yield */
-	int yield() const { return pthread_yield(); }
+	int yield() const
+	{
+		// OS X does not define int pthread_yield() but defines void pthread_yield_np()
+		#ifdef __MACH__
+			pthread_yield_np();
+			return 0;
+		#else
+			return pthread_yield();
+		#endif
+	}
 
 	/*! Kill the thread.
 	  \param signum signal number to send */

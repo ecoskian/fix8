@@ -167,6 +167,7 @@ void Logger::flush()
 //-------------------------------------------------------------------------------------------------
 void Logger::purge_thread_codes()
 {
+	#ifndef __MACH__
 	f8_scoped_lock guard(_mutex);
 
 	for (ThreadCodes::iterator itr(_thread_codes.begin()); itr != _thread_codes.end();)
@@ -181,11 +182,13 @@ void Logger::purge_thread_codes()
 		else
 			++itr;
 	}
+	#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 char Logger::get_thread_code(pthread_t tid)
 {
+	#ifndef __MACH__
 	f8_scoped_lock guard(_mutex);
 
 	ThreadCodes::const_iterator itr(_thread_codes.find(tid));
@@ -202,6 +205,7 @@ char Logger::get_thread_code(pthread_t tid)
 			return acode;
 		}
 	}
+	#endif
 
 	return '?';
 }

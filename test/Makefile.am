@@ -59,7 +59,8 @@ $(libmyfix_la_SOURCES): $(XML_SCHEMA)
 	$(top_srcdir)/compiler/f8c -rVn TEX $(XML_SCHEMA) -x $(XML_FIXT_SCHEMA)
 
 POCO_LIBS = -lPocoFoundation -lPocoNet -lPocoUtil
-GEN_LIBS = -lrt -lfix8 -lpthread
+#GEN_LIBS = -lrt -lfix8 -lpthread
+GEN_LIBS = -lfix8 -lpthread
 if BDBSUPPORT
 GEN_LIBS += -ldb_cxx
 endif

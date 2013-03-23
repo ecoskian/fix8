@@ -40,6 +40,11 @@ HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 //-------------------------------------------------------------------------------------------------
 #include <sys/time.h>
 
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 //-------------------------------------------------------------------------------------------------
 namespace FIX8
 {
@@ -57,6 +62,22 @@ public:
 
 private:
 	f8_atomic<ticks> _value;
+
+	/*!
+	  \param ts populate timespec with current time (CLOCK_REALTIME on linux, its equivalent on OS X) */
+	static inline void get_time(struct timespec* ts) {
+		#ifdef __MACH__ // OS X compatibility
+			clock_serv_t cclock;
+			mach_timespec_t mts;
+			host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+			clock_get_time(cclock, &mts);
+			mach_port_deallocate(mach_task_self(), cclock);
+			ts->tv_sec = mts.tv_sec;
+			ts->tv_nsec = mts.tv_nsec;
+		#else
+			clock_gettime(CLOCK_REALTIME, ts);
+		#endif
+	}
 
 public:
 	/*! Ctor.
@@ -124,7 +145,7 @@ public:
 	static Tickval get_tickval()
 	{
 		timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
+		get_time(&ts);
 		return Tickval(ts);
 	}
 
@@ -133,7 +154,7 @@ public:
 	static Tickval& get_tickval(Tickval& to)
 	{
 		timespec ts;
-		clock_gettime(CLOCK_REALTIME, &ts);
+		get_time(&ts);
 		return to = ts;
 	}
 

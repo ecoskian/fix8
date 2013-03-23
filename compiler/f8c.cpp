@@ -1131,7 +1131,9 @@ int process(XmlElement& xf, Ctxt& ctxt)
 //-------------------------------------------------------------------------------------------------
 void binary_report()
 {
-#if defined __GNUG__
+#ifdef __MACH__
+	cout << "No information available." << endl;
+#elif defined __GNUG__
 #if defined __GNUC_MINOR__ && __GNUC_PATCHLEVEL__
 	cout << "Compiled with gcc version " << __GNUG__ << '.' << __GNUC_MINOR__ << '.' <<__GNUC_PATCHLEVEL__ << endl;
 #endif

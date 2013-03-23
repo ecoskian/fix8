@@ -37,7 +37,13 @@ seqedit_SOURCES = seqedit.cpp
 CLEANFILES =
 INCLUDES = -I$(top_srcdir)/include
 
-GEN_LIBS = -lrt -lstdc++
+GEN_LIBS = -lstdc++
+platform=$(shell uname)
+#if $(platform) = Darwin
+#GEN_LIBS = -lstdc++
+#else
+#GEN_LIBS = -lrt -lstdc++
+#endif
 
 ALL_LIBS = $(GEN_LIBS) -L$(top_srcdir)/runtime
 
